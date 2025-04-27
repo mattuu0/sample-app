@@ -1,2 +1,11 @@
 FROM node:lts-slim as develop
 
+WORKDIR /root/app
+
+COPY ./src .
+
+WORKDIR /root/app/frontend
+
+RUN npm i --verbose
+
+CMD [ "npm","run","dev"]

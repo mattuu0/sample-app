@@ -22,15 +22,20 @@ services:
         build:
             context: ./frontend
             dockerfile: dockerfile
+        ports:
+            - "3000:3000"
         tty: true
         volumes:
             - ./frontend/src:/root/app
+            - ignore-node-modules:/root/app/frontend/node_modules
+        networks:
+            - frontend
     
     nginx:
         hostname: nginx
         image: nginx:latest
         ports:
-            - 8375:8443
+            - 8443:8443
         restart: always
         tty: true
         volumes:
@@ -40,6 +45,9 @@ services:
         networks:
             - frontend
             - backend
+
+volumes:
+    ignore-node-modules:
 
 networks:
     frontend:
