@@ -1,0 +1,52 @@
+services:
+    backend:
+        hostname: backend
+        # ビルドの設定
+        build:
+            context: ./backend
+            dockerfile: dockerfile
+            target: develop
+        # 環境変数を設定
+        environment:
+            - BindAddr=:9090
+        # 起動するように設定
+        tty: true
+        # ボリュームをマウント
+        volumes:
+            - ./backend/src:/root/app
+        # ネットワーク設定
+        networks:
+            - backend
+    frontend:
+        hostname: frontend
+        build:
+            context: ./frontend
+            dockerfile: dockerfile
+        tty: true
+        volumes:
+            - ./frontend/src:/root/app
+    
+    nginx:
+        hostname: nginx
+        image: nginx:latest
+        ports:
+            - 8375:8443
+        restart: always
+        tty: true
+        volumes:
+            - ./nginx/configs:/etc/nginx/conf.d/
+            - ./nginx/keys:/etc/nginx/keys
+            - ./nginx/statics:/etc/nginx/static/statics
+        networks:
+            - frontend
+            - backend
+
+networks:
+    frontend:
+        # 外部からアクセス可能なネットワーク
+    database:
+        # データベース用のネットワーク
+        internal: true
+    backend:
+        # 内部コンテナ間通信用のネットワーク
+        internal: false  # インターネットアクセスを許可

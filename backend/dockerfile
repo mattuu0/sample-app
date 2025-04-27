@@ -1,0 +1,13 @@
+FROM golang:1.24.2-bookworm as develop
+
+RUN apt update
+RUN apt install -y curl git wget
+
+# air をインストール
+RUN go install github.com/air-verse/air@latest
+
+# 作業ディレクトリを固定
+WORKDIR /root/app
+
+# air を実行
+CMD [ "air" ]
